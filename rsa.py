@@ -1,6 +1,6 @@
 
 import auxiliar
-from auxiliar import choose_coprime
+from auxiliar import choose_coprime, generate_prime
 
 import math
 
@@ -93,3 +93,28 @@ def rsa_decode(encrypted_message: list[bytes], n: int, d: int) -> str:
         decrypted_message += chr(char_code)
 
     return str(decrypted_message) 
+
+
+def generate_keys() -> tuple[dict[str,int], dict[str,int]]:
+    private_key: dict[str,int] = dict()
+    public_key: dict[str,int]  = dict()
+
+    p: int = generate_prime(2**50)
+    q: int = generate_prime(2**50)
+
+    print(f"(generated p,q = {p,q})")
+
+    n: int = p*q
+
+    e:int  = generate_e(p, q)
+    d: int = choose_d(p, q, e)
+
+    print(f"e choosed: {e}")
+    print(f"d finded: {d}")
+
+    public_key["n"] = n  
+    public_key["e"] = e  
+    private_key["n"] = n 
+    private_key["d"] = d
+
+    return (public_key, private_key)

@@ -1,37 +1,28 @@
 
 import rsa 
-from rsa import *
-
-from auxiliar import generate_prime
-
+from rsa import generate_keys, rsa_encode, rsa_decode
 
 def main() -> None:
+	A_public_key: dict[str,int]; A_private_key: dict[str,int];
+	B_public_key: dict[str,int]; B_private_key: dict[str,int];
 
-	p: int = generate_prime(2**50)
-	q: int = generate_prime(2**50)
+	A_public_key, A_private_key = generate_keys()
+	B_public_key, B_private_key = generate_keys()
 
-	print(f"(generated p,q = {p,q})")
+	print(f"A public key pair: {A_public_key}, private key pair: {A_private_key}")
+	print(f"B public key pair: {B_public_key}, private key pair: {B_private_key}")
 
-	n: int = p*q
+	message: str = input("Digite a mensagem a ser criptografada em RSA por A:")
 
-	e:int  = generate_e(p, q)
-	d: int = choose_d(p, q, e)
+	print(f"Message to be send from A to B: {message}")
 
+	encrypted_message: list[bytes] = rsa_encode(message, A_public_key["n"], A_public_key["e"])
 
-	print(f"e choosed: {e}")
-	print(f"d finded: {d}")
+	print(f"encrypted message receive by B: {encrypted_message}")
 
-	message: str = input("Digite a mensagem a ser criptografada em RSA: ")
+	decrypted_message: str = rsa_decode(encrypted_message, A_public_key["n"], A_private_key["d"])
 
-	print(f"Message to be send: {message}")
-
-	encrypted_message: list[bytes] = rsa_encode(message, n, e)
-
-	print(f"encrypted message: {encrypted_message}")
-
-	decrypted_message: str = rsa_decode(encrypted_message, n, d)
-
-	print(f"decrypted message: {decrypted_message}")
+	print(f"decrypted message by B: {decrypted_message}")
 	
 
 if __name__ == "__main__":
